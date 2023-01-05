@@ -1,0 +1,164 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+
+
+
+
+
+
+  </head>
+  <body>
+
+    <div class="container" id="app">
+      
+      <br>
+      <br>
+      <a style="font-size: large;" href="/index">Go Back</a>
+      <h1>Pick Dates: </h1>  
+        <br>
+        <div style="margin: 20px;">
+            <strong>From: </strong>
+            <input type="date" id="fromDate" name="fromDate" onchange="fromChanged(this.value)">
+            <strong style="margin-left: 20px;">To: </strong>
+            <input type="date" id="toDate" name="toDate">
+
+            <button style="margin-left: 10px;" type="button" id="submitButton" onclick="getForDates()">Submit</button>
+            <button style="margin-left: 30px;" onclick="getAllRecords();">Show All Records</button>
+            
+            <br>
+            <br>
+        
+        </div>
+
+        <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Temperature in Degree Celcius</th>
+      <th scope="col">Date Recorded</th>
+      
+    </tr>
+  </thead>
+  <tbody id="tableBody">
+  </tbody>
+</table>
+
+        </div>
+
+
+
+
+
+
+        
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+
+        <script src="{% static 'app.js' %}"></script>
+
+  
+
+<script type="text/javascript">
+
+    var fromDateInput = document.getElementById("fromDate");
+    var toDateInput = document.getElementById("toDate");
+
+  today = function () {
+    var today = new Date();
+    return today.toISOString().substr(0, 10);
+    
+  }();
+
+
+  fromDateInput.value = today;
+  fromDate.max = today;
+  toDateInput.value  =today;
+  toDateInput.max= today;
+
+  function fromChanged(newDate)
+  {
+    toDateInput.value  =today;
+    toDateInput.min = newDate;
+  }
+
+
+
+  function getForDates()
+  {
+    let fromDate = fromDateInput.value;
+    let toDate = toDateInput.value;
+    a  = async function getRecords() {
+    const res = await fetch("/get_by_range?"+ new URLSearchParams({
+    to_date: toDate,
+    from_date: fromDate,
+}));
+    const finalRes = await res.json();
+    ht = "";
+    x = 1
+    for (i in finalRes)
+    {
+      ht+="<tr><td>"
+      ht+=(x)
+      ht+="</td><td>"
+      ht+=finalRes[i].temperature
+      ht+="</td><td>"
+      ht+=finalRes[i].date_recorded
+      ht+="</td></tr>"
+      x+=1
+    }
+    console.log(ht)
+    tBody.innerHTML = ht;
+    
+    
+
+  }();
+
+  }
+
+  function getAllRecords()
+  {
+    tBody = document.getElementById("tableBody");
+
+    a  = async function getRecords() {
+    const res = await fetch("/get_all_records");
+    const finalRes = await res.json();
+    ht = "";
+    x = 1
+    for (i in finalRes)
+    {
+      ht+="<tr><td>"
+      ht+=(x)
+      ht+="</td><td>"
+      ht+=finalRes[i].temperature
+      ht+="</td><td>"
+      ht+=finalRes[i].date_recorded
+      ht+="</td></tr>"
+      x+=1
+    }
+    console.log(ht)
+    tBody.innerHTML = ht;
+    
+    
+
+  }();
+
+}
+
+getAllRecords();
+
+
+
+</script>
+
+
+  </body>
+</html>

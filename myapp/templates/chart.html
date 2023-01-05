@@ -1,0 +1,85 @@
+<!--
+	THIS EXAMPLE WAS DOWNLOADED FROM https://echarts.apache.org/examples/en/editor.html?c=line-simple
+-->
+<!DOCTYPE html>
+<html lang="en" style="height: 100%">
+<head>
+  <meta charset="utf-8">
+      <!-- Bootstrap CSS -->
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+</head>
+<body style="height: 100%; margin: 0">
+  <div class="container">
+    <br>
+    
+    <br>
+    
+    
+    <a style="font-size: large;" href="/index">Go Back</a><h2>Average Temperature Data for the year 2022</h2>
+    <br>
+  <div id="container" style="height: 480px;"></div>
+
+  
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.1/dist/echarts.min.js"></script>
+  
+  <script type="text/javascript">
+
+    results = []
+    a = async function loadData()
+    {
+      const res = await fetch("/get_average_temperatures");
+      const finalRes = await res.json();
+      
+      var dom = document.getElementById('container');
+      var myChart = echarts.init(dom, null, {
+      renderer: 'canvas',
+      useDirtyRect: false});
+      var app = {};
+      var option;
+
+    option = {
+  xAxis: {
+    type: 'category',
+    data: []
+  },
+  yAxis: {
+    type: 'value'
+  },
+  series: [
+    {
+      data: [],
+      type: 'line'
+    }
+  ]
+};
+
+      for (var i in finalRes){
+        option.xAxis.data.push(finalRes[i].month);
+        
+        option.series[0].data.push(finalRes[i].average_temp);
+    
+      }
+        
+    
+
+      if (option && typeof option === 'object') {
+        myChart.setOption(option);
+      }
+
+      window.addEventListener('resize', myChart.resize);
+    }
+
+    a();
+
+
+
+
+
+
+
+
+
+  </script>
+</body>
+</html>
